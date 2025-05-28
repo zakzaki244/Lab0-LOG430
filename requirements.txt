@@ -1,1 +1,5 @@
 pytest
+flake8
+psycopg2-binary
+click
+SQLAlchemy>=2.0

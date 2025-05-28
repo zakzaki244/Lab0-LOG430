@@ -1,5 +1,25 @@
-version: "3.8"
+version: "3.9"
+
 services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: posdb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
   app:
     build: .
-    image: lab0-hello:latest
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://postgres:secret@db:5432/posdb
+    tty: true
+    stdin_open: true
+
+volumes:
+  pgdata:
