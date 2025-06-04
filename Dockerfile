@@ -6,8 +6,9 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# **Important** : on copie TOUT le dossier (dont main.py, service.py, dao.py…)
-COPY . .
 
-# On démarre main.py (et non plus app.py)
+COPY ./src /app
+
+WORKDIR /app
+
 CMD ["python", "main.py"]
