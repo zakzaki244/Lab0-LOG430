@@ -20,6 +20,6 @@ services:
       DATABASE_URL: postgresql://postgres:secret@db:5432/posdb
     tty: true
     stdin_open: true
-
+  
 volumes:
   pgdata:
