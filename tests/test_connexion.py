@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 
-DATABASE_URL = "postgresql://log430:UzKlwfV6aLJ9utNb@10.194.32.174:5432/posdb"
+DATABASE_URL = "postgresql://log430:laboratoire@localhost:5432/log430" #postgresql://utilisateur:motdepasse@adresse_ip:port/nom_dbcd
 
 try:
     engine = create_engine(DATABASE_URL)
