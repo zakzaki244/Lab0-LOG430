@@ -10,7 +10,7 @@ Ce dépôt contient l’application console POS (Point Of Sale) à deux niveaux,
 
 ---
 
-## 📋 Instructions
+##  Instructions
 
 ## Prérequis
 - Python 3.11  
@@ -56,7 +56,7 @@ Lancer l’application et la base PostgreSQL :
 - Tests (pytest)
 - Build & Push (Docker)
 
-## 🛠️ Choix technologiques
+## Choix technologiques
 
 | Composant        | Outil / Bibliothèque | Justification                                                               |
 |------------------|----------------------|------------------------------------------------------------------------------|

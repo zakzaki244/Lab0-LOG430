@@ -1,4 +1,3 @@
-
 from dao import DAO
 from sqlalchemy.exc import NoResultFound
 

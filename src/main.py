@@ -1,4 +1,3 @@
-
 from service import Service
 
 def print_menu():

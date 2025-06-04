@@ -1,4 +1,3 @@
-
 from sqlalchemy.exc import NoResultFound
 from db import SessionLocal, init_db
 from models import Product, Sale, SaleItem
