@@ -79,11 +79,12 @@ Lancer l’application et la base PostgreSQL :
 ## Structure
 <pre>
 Laboratoire-LOG430/
-├── app.py
-├── service.py 
-├── dao.py 
-├── models.py 
-├── db.py
+├── src/
+│   └── main.py
+│   └── service.py 
+│   └── dao.py  
+│   └── models.py 
+│   └── db.py 
 ├── requirements.txt
 ├── Dockerfile
 ├── docker-compose.yml
@@ -100,7 +101,8 @@ Laboratoire-LOG430/
 │   │   └── Vue Implementation.png
 │   └── Analyse des besoins.md
 ├── tests/
-│   └── test_app.py
+│   └── test_connexion.py
+│   └── test_dao.py  
 ├── .github/
 │   └── workflows/
 │       └── ci.yml
