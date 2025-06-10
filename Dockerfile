@@ -1,14 +1,10 @@
-FROM python:3.11-slim
+FROM python:3.12-slim
 
 WORKDIR /app
 
-# On copie juste le requirements, on installe, puis on copie tout le reste
-COPY requirements.txt .
+COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
+COPY . .
 
-COPY ./src /app
-
-WORKDIR /app
-
-CMD ["python", "main.py"]
+CMD ["python", "src/main.py"]
