@@ -4,22 +4,28 @@ services:
   db:
     image: postgres:15
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: secret
-      POSTGRES_DB: posdb
+      POSTGRES_USER: log430
+      POSTGRES_PASSWORD: laboratoire
+      POSTGRES_DB: log430
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
 
-  app:
-    build: .
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
     depends_on:
       - db
     environment:
-      DATABASE_URL: postgresql://postgres:secret@db:5432/posdb
-    tty: true
-    stdin_open: true
-  
+      DATABASE_URL: postgresql://log430:laboratoire@db:5432/log430
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./src:/app
+      - ./templates:/app/templates
+    restart: always
+
 volumes:
-  pgdata:
+  db-data:
