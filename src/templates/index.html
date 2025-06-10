@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Système de caisse</title>
+</head>
+<body>
+    <h1>Bienvenue sur le POS Web</h1>
+    <ul>
+        <li><a href="{{ url_for('search') }}">Rechercher un produit</a></li>
+        <li><a href="{{ url_for('show_stock') }}">Consulter le stock</a></li>
+        <li><a href="{{ url_for('new_sale') }}">Enregistrer une vente</a></li>
+        <li><a href="{{ url_for('delete_sale') }}">Annuler une vente</a></li>
+    </ul>
+</body>
+</html>

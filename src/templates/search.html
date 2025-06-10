@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rechercher un produit</title>
+</head>
+<body>
+    <h1>Rechercher un produit</h1>
+    <form method="post">
+        <input type="text" name="term" placeholder="ID, nom ou catégorie">
+        <button type="submit">Rechercher</button>
+    </form>
+    {% if results %}
+        <ul>
+        {% for p in results %}
+            <li>{{ p.id }} : {{ p.name }} ({{ p.category }}) — {{ p.price }}$ — Stock: {{ p.stock }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    <a href="{{ url_for('home') }}">Retour accueil</a>
+</body>
+</html>
