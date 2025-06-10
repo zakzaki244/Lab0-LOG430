@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>État du stock</h2>
+<table border="1" cellpadding="5" cellspacing="0">
+    <tr><th>ID</th><th>Nom</th><th>Catégorie</th><th>Prix</th><th>Stock</th></tr>
+    {% for p in produits %}
+      <tr>
+        <td>{{p.id}}</td>
+        <td>{{p.name}}</td>
+        <td>{{p.category}}</td>
+        <td>{{p.price}} $</td>
+        <td>{{p.stock}}</td>
+      </tr>
+    {% endfor %}
+</table>
+{% endblock %}
