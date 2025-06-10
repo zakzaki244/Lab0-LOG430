@@ -85,7 +85,7 @@ Le DDD facilite la modularité, l’évolutivité et la robustesse du projet, to
    Optionnel : créer et activer un environnement virtuel
    ```bash
    python3 -m venv .venv
-   source .venv/bin/activate
+   source .venv/bin/activate et/ou sur Windows : venv\Scripts\activate
    pip install --upgrade pip
    pip install -r requirements.txt
    
