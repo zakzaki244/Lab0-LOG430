@@ -23,19 +23,28 @@ def index():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    from db import SessionLocal
+    from models import Store
+    session_db = SessionLocal()
+    magasins = session_db.query(Store).all()
+    session_db.close()
     message = ""
     if request.method == "POST":
         username = request.form.get("username", "")
         role = request.form.get("role", "")
+        magasin_id = request.form.get("magasin_id", None)
         if username and role:
             session["username"] = username
             session["role"] = role
+            # On mémorise le magasin de l'employé
+            if role == "employe" and magasin_id:
+                session["magasin_id"] = int(magasin_id)
             flash(f"Connecté en tant que {role} ({username})")
             return redirect(url_for("index"))
         else:
             message = "Veuillez remplir tous les champs"
-    return render_template("login.html", message=message)
-
+    return render_template("login.html", message=message, magasins=magasins)
+    
 @app.route("/logout")
 def logout():
     session.clear()
@@ -70,6 +79,26 @@ def store_stock(store_id):
     session.close()
     return render_template("stock.html", store=store, products=produits)
 
+@app.route("/stock")
+@login_required
+def stock():
+    from db import SessionLocal
+    from models import Store, Product
+    session_db = SessionLocal()
+    # Si employé, filtrer sur son magasin
+    if session.get("role") == "employe":
+        magasin_id = session.get("magasin_id")
+        if not magasin_id:
+            flash("Aucun magasin associé.")
+            return redirect(url_for("logout"))
+        produits = session_db.query(Product).filter_by(store_id=magasin_id).all()
+        magasin = session_db.query(Store).get(magasin_id)
+        magasins = [magasin]
+    else:
+        produits = session_db.query(Product).all()
+        magasins = session_db.query(Store).all()
+    session_db.close()
+    return render_template("stock.html", produits=produits, magasins=magasins)
 
 @app.route("/sale", methods=["GET", "POST"])
 @login_required
