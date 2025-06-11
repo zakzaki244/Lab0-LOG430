@@ -212,5 +212,14 @@ def rapport():
         stocks=stocks,
     )
 
+    def get_centre_id():
+    from db import SessionLocal
+    from models import Store
+    session = SessionLocal()
+    centre = session.query(Store).filter_by(name="Centre Logistique").first()
+    centre_id = centre.id if centre else None
+    session.close()
+    return centre_id
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
