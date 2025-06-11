@@ -86,25 +86,19 @@ def store_stock(store_id):
     return render_template("stock.html", store=store, products=produits)
 
 @app.route("/stock")
-@login_required
 def stock():
     from db import SessionLocal
     from models import Store, Product
-    session_db = SessionLocal()
-    # Si employé, filtrer sur son magasin
-    if session.get("role") == "employe":
-        magasin_id = session.get("magasin_id")
-        if not magasin_id:
-            flash("Aucun magasin associé.")
-            return redirect(url_for("logout"))
-        produits = session_db.query(Product).filter_by(store_id=magasin_id).all()
-        magasin = session_db.query(Store).get(magasin_id)
-        magasins = [magasin]
+    store_id = request.args.get("store_id")
+    session = SessionLocal()
+    store = None
+    if store_id:
+        produits = session.query(Product).filter_by(store_id=store_id).all()
+        store = session.query(Store).get(int(store_id))
     else:
-        produits = session_db.query(Product).all()
-        magasins = session_db.query(Store).all()
-    session_db.close()
-    return render_template("stock.html", produits=produits, magasins=magasins)
+        produits = session.query(Product).all()
+    session.close()
+    return render_template("stock.html", produits=produits, store=store)
 
 @app.route("/sale", methods=["GET", "POST"])
 @login_required
