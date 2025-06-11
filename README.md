@@ -91,7 +91,7 @@ Le DDD facilite la modularité, l’évolutivité et la robustesse du projet, to
    
 4. **Lancer l'application interface web**  
    ```bash
-   Ouvre le navigateur à l’adresse : 
+   Ouvre le navigateur à l’adresse : http://10.194.32.174:5000/
 
 5. **Tests unitaires**  
    ```bash
@@ -138,11 +138,19 @@ Le DDD facilite la modularité, l’évolutivité et la robustesse du projet, to
 <pre>
 Laboratoire-LOG430/
 ├── src/
+│   └── app.py
 │   └── main.py
 │   └── service.py 
 │   └── dao.py  
 │   └── models.py 
 │   └── db.py 
+│   ├── templates/
+│   │   ├── base.html
+│   │   ├── index.html
+│   │   ├── refund.html
+│   │   ├── sale.html
+│   │   ├── search.html
+│   │   ├── stock.html
 ├── requirements.txt
 ├── Dockerfile
 ├── docker-compose.yml
@@ -150,14 +158,6 @@ Laboratoire-LOG430/
 │   ├── ADR/
 │   │   ├── ADR 0001.md
 │   │   └── ADR 0002.md
-│   ├── UML/
-│   │   ├── Cas Utilisation.png
-│   │   ├── Diagramme de classe.png
-│   │   └── Diagramme de sequence-Enregsitrer une vente.png
-│   │   └── Diagramme de sequence-Rechercher un produit.png
-│   │   └── Vue Deploiement.png
-│   │   └── Vue Implementation.png
-│   └── Analyse des besoins.md
 ├── tests/
 │   └── test_connexion.py
 │   └── test_dao.py  
