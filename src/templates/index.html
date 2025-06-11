@@ -1,5 +1,7 @@
+{% extends "base.html" %}
+{% block content %}
 <h2>Bienvenue sur le Système POS Web</h2>
-{% if session.role in ["employe", "responsable"] and session.store_id %}
+{% if session.role in ["employe", "responsable"] %}
     <p>Vous êtes assigné au magasin :
         <b>
             {% for store in magasins %}
@@ -9,5 +11,8 @@
             {% endfor %}
         </b>
     </p>
-    <p>DEBUG: magasins = {{ magasins|length }}, session.store_id = {{ session.store_id }}</p>
 {% endif %}
+
+<!-- DEBUG : à supprimer après -->
+<p>DEBUG: magasins = {{ magasins|length }}, session.store_id = {{ session.store_id }}</p>
+{% endblock %}
