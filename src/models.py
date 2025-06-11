@@ -14,7 +14,7 @@ class Store(Base):
 class Product(Base):
     __tablename__ = "products"
     id       = Column(Integer, primary_key=True)
-    name     = Column(String, unique=True, index=True)
+    name     = Column(String, index=True)
     category = Column(String, index=True)
     price    = Column(Float)
     stock    = Column(Integer, default=0)
