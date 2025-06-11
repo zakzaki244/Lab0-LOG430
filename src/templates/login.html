@@ -6,44 +6,31 @@
   <input name="username" required>
   <br>
   <label>Rôle :</label>
-  <select name="role" id="role-select" required>
-    <option value="">Sélectionnez un rôle</option>
+  <select name="role" id="role-select" required onchange="toggleMagasin()">
+    <option value="">Choisir...</option>
     <option value="employe">Employé</option>
     <option value="responsable">Responsable</option>
     <option value="gestionnaire">Gestionnaire maison mère</option>
     <option value="logistique">Responsable logistique</option>
   </select>
   <br>
-  <label id="magasin-label" style="display:none;">Magasin :</label>
-  <select name="magasin_id" id="magasin-select" style="display:none;">
-    <option value="">Sélectionnez un magasin</option>
-    {% for store in magasins %}
-      <option value="{{ store.id }}">{{ store.name }}</option>
-    {% endfor %}
-  </select>
-  <br>
+  <div id="magasin-select" style="display:none;">
+    <label>Magasin :</label>
+    <select name="store_id">
+      {% for store in magasins %}
+        <option value="{{ store.id }}">{{ store.name }}</option>
+      {% endfor %}
+    </select>
+    <br>
+  </div>
   <button type="submit">Se connecter</button>
 </form>
-
 <script>
-  // Affiche/masque le menu magasin selon le rôle choisi
-  document.addEventListener('DOMContentLoaded', function() {
-    var roleSelect = document.getElementById('role-select');
-    var magasinLabel = document.getElementById('magasin-label');
-    var magasinSelect = document.getElementById('magasin-select');
-    roleSelect.addEventListener('change', function() {
-      if (this.value === "employe") {
-        magasinLabel.style.display = 'inline';
-        magasinSelect.style.display = 'inline';
-      } else {
-        magasinLabel.style.display = 'none';
-        magasinSelect.style.display = 'none';
-        magasinSelect.value = ""; // Reset sélection
-      }
-    });
-  });
+function toggleMagasin() {
+    var role = document.getElementById('role-select').value;
+    document.getElementById('magasin-select').style.display = (role === 'employe' || role === 'responsable') ? '' : 'none';
+}
 </script>
-
 {% if message %}
   <div class="error">{{ message }}</div>
 {% endif %}

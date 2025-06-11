@@ -19,7 +19,12 @@ def login_required(f):
 @app.route("/")
 @login_required
 def index():
-    return render_template("index.html")
+    from db import SessionLocal
+    from models import Store
+    session_db = SessionLocal()
+    magasins = session_db.query(Store).all()
+    session_db.close()
+    return render_template("index.html", magasins=magasins)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -32,19 +37,19 @@ def login():
     if request.method == "POST":
         username = request.form.get("username", "")
         role = request.form.get("role", "")
-        magasin_id = request.form.get("magasin_id", None)
+        store_id = request.form.get("store_id")
         if username and role:
             session["username"] = username
             session["role"] = role
-            # On mémorise le magasin de l'employé
-            if role == "employe" and magasin_id:
-                session["magasin_id"] = int(magasin_id)
+            if role in ("employe", "responsable"):
+                session["store_id"] = int(store_id)
             flash(f"Connecté en tant que {role} ({username})")
             return redirect(url_for("index"))
         else:
             message = "Veuillez remplir tous les champs"
     return render_template("login.html", message=message, magasins=magasins)
-    
+
+
 @app.route("/logout")
 def logout():
     session.clear()
@@ -103,7 +108,17 @@ def stock():
 @app.route("/sale", methods=["GET", "POST"])
 @login_required
 def sale():
-    produits = svc.stock()
+    from db import SessionLocal
+    from models import Product
+    store_id = session.get("store_id")
+    produits = []
+    if store_id:
+        session_db = SessionLocal()
+        produits = session_db.query(Product).filter_by(store_id=store_id).all()
+        session_db.close()
+    else:
+        produits = svc.stock()
+    
     message = ""
     if request.method == "POST":
         cart = []
