@@ -1,0 +1,13 @@
+
+{% extends "base.html" %}
+{% block content %}
+<h2>Liste des magasins</h2>
+<ul>
+    {% for magasin in magasins %}
+        <li>
+            {{ magasin.name }} (ID: {{ magasin.id }})<br>
+            <a href="/stock?store_id={{ magasin.id }}">Voir le stock</a>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

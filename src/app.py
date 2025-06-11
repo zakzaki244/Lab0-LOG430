@@ -42,6 +42,15 @@ def logout():
     flash("Déconnecté")
     return redirect(url_for("login"))
 
+@app.route("/magasins")
+def magasins():
+    from db import SessionLocal
+    from models import Store
+    session = SessionLocal()
+    magasins = session.query(Store).all()
+    session.close()
+    return render_template("magasins.html", magasins=magasins)
+
 @app.route("/search", methods=["GET", "POST"])
 @login_required
 def search():
@@ -52,10 +61,18 @@ def search():
     return render_template("search.html", results=results)
 
 @app.route("/stock")
-@login_required
 def stock():
-    produits = svc.stock()
+    from db import SessionLocal
+    from models import Product
+    store_id = request.args.get("store_id")
+    session = SessionLocal()
+    if store_id:
+        produits = session.query(Product).filter_by(store_id=store_id).all()
+    else:
+        produits = session.query(Product).all()
+    session.close()
     return render_template("stock.html", produits=produits)
+    
 
 @app.route("/sale", methods=["GET", "POST"])
 @login_required
