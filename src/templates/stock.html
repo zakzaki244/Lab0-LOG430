@@ -1,4 +1,4 @@
-<h2>État du stock - {{ store.name }} (ID: {{ store.id }})</h2>
+<h2>État du stock{% if store %} - {{ store.name }} (ID: {{ store.id }}){% endif %}</h2>
 <table>
   <tr>
     <th>ID</th>
@@ -7,7 +7,7 @@
     <th>Prix</th>
     <th>Stock</th>
   </tr>
-  {% for product in products %}
+  {% for product in produits %}
   <tr>
     <td>{{ product.id }}</td>
     <td>{{ product.name }}</td>

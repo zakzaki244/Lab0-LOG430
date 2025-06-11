@@ -33,17 +33,19 @@ def login():
     session_db = SessionLocal()
     magasins = session_db.query(Store).all()
     session_db.close()
-
     message = ""
     if request.method == "POST":
         username = request.form.get("username", "")
         role = request.form.get("role", "")
-        store_id = request.form.get("store_id", "")
-        if username and role and (role != "employe" or store_id):
+        store_id = request.form.get("store_id", None)
+        if username and role:
             session["username"] = username
             session["role"] = role
-            if role == "employe":
+            # Si c'est un employé ou responsable on garde le store_id
+            if role in ["employe", "responsable"] and store_id:
                 session["store_id"] = int(store_id)
+            else:
+                session.pop("store_id", None)
             flash(f"Connecté en tant que {role} ({username})")
             return redirect(url_for("index"))
         else:
@@ -76,29 +78,36 @@ def search():
     return render_template("search.html", results=results)
 
 @app.route("/store/<int:store_id>/stock")
+@login_required
 def store_stock(store_id):
     from db import SessionLocal
     from models import Store, Product
-    session = SessionLocal()
-    store = session.query(Store).get(store_id)
-    produits = session.query(Product).filter_by(store_id=store_id).all()
-    session.close()
-    return render_template("stock.html", store=store, products=produits)
+    session_db = SessionLocal()
+    store = session_db.query(Store).get(store_id)
+    produits = session_db.query(Product).filter_by(store_id=store_id).all()
+    session_db.close()
+    return render_template("stock.html", store=store, produits=produits)
+
 
 @app.route("/stock")
+@login_required
 def stock():
     from db import SessionLocal
     from models import Store, Product
-    store_id = request.args.get("store_id")
-    session = SessionLocal()
+    session_db = SessionLocal()
     store = None
+    produits = []
+
+    store_id = session.get("store_id")  # magasin assigné en session
     if store_id:
-        produits = session.query(Product).filter_by(store_id=store_id).all()
-        store = session.query(Store).get(int(store_id))
+        store = session_db.query(Store).get(store_id)
+        produits = session_db.query(Product).filter_by(store_id=store_id).all()
     else:
-        produits = session.query(Product).all()
-    session.close()
+        # Si pas de magasin (gestionnaire), montrer tous les produits
+        produits = session_db.query(Product).all()
+    session_db.close()
     return render_template("stock.html", produits=produits, store=store)
+
 
 @app.route("/sale", methods=["GET", "POST"])
 @login_required
@@ -107,12 +116,13 @@ def sale():
     from models import Product
     store_id = session.get("store_id")
     produits = []
+    session_db = SessionLocal()
     if store_id:
-        session_db = SessionLocal()
         produits = session_db.query(Product).filter_by(store_id=store_id).all()
-        session_db.close()
     else:
-        produits = svc.stock()
+        # Gestionnaire : toutes les ventes possibles (optionnel)
+        produits = session_db.query(Product).all()
+    session_db.close()
     
     message = ""
     if request.method == "POST":
@@ -138,6 +148,7 @@ def sale():
         else:
             message = "Aucun article sélectionné."
     return render_template("sale.html", produits=produits, message=message)
+
 
 @app.route("/refund", methods=["GET", "POST"])
 @login_required
