@@ -68,7 +68,7 @@ def store_stock(store_id):
     store = session.query(Store).get(store_id)
     produits = session.query(Product).filter_by(store_id=store_id).all()
     session.close()
-    return render_template("stock.html", store=store, produits=produits)
+    return render_template("stock.html", store=store, products=produits)
 
 
 @app.route("/sale", methods=["GET", "POST"])
