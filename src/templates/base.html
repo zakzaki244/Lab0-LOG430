@@ -9,6 +9,7 @@
         .nav a { margin-right: 2em; text-decoration: none; color: #025;}
         .flash { background: #e3ffe3; padding: 0.5em 1em; border: 1px solid #0a0; margin-bottom: 1em;}
         .error { color: #b00; }
+        .session { margin-bottom: 1em; font-size: 0.9em;}
     </style>
 </head>
 <body>
@@ -18,6 +19,12 @@
         <a href="{{ url_for('stock') }}">Stock</a>
         <a href="{{ url_for('sale') }}">Nouvelle vente</a>
         <a href="{{ url_for('refund') }}">Annuler vente</a>
+        <a href="{{ url_for('login') }}">Se connecter</a>
+    </div>
+    <div class="session">
+        {% if session.username %}
+          Connecté en tant que <b>{{ session.username }}</b> ({{ session.role }}) — <a href="{{ url_for('logout') }}">Déconnexion</a>
+        {% endif %}
     </div>
     {% with messages = get_flashed_messages() %}
       {% if messages %}

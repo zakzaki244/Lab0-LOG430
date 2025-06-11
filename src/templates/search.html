@@ -2,7 +2,7 @@
 {% block content %}
 <h2>Recherche de produits</h2>
 <form method="post">
-    <input name="term" placeholder="Nom, catégorie, ID">
+    <input name="term" placeholder="Nom, catégorie, ID" required>
     <button type="submit">Rechercher</button>
 </form>
 {% if results %}

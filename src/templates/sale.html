@@ -13,7 +13,9 @@
         <td>{{p.name}}</td>
         <td>{{p.stock}}</td>
         <td>{{p.price}} $</td>
-        <td><input type="number" name="qte_{{p.id}}" min="0" max="{{p.stock}}" value="0" style="width:50px"></td>
+        <td>
+          <input type="number" name="qte_{{p.id}}" min="0" max="{{p.stock}}" value="0" style="width:50px" required>
+        </td>
       </tr>
     {% endfor %}
   </table>
