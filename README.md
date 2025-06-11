@@ -1,4 +1,4 @@
-# Lab2-LOG430 – Architecture 3-tiers 
+# Lab3-LOG430 – Exposition d’une API RESTful 
 
 [![CI](https://github.com/zakzaki244/Lab0-LOG430/actions/workflows/ci.yml/badge.svg)](https://github.com/zakzaki244/Lab0-LOG430/actions)
 

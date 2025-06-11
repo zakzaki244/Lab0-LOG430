@@ -1,23 +1,29 @@
 from db import SessionLocal, init_db
-from models import Product
+from models import Store, Product
 
-# Initialise les tables si besoin
+# Crée la structure si besoin
 init_db()
 session = SessionLocal()
 
-# Quelques exemples de produits à ajouter :
-products = [
-    Product(name="Bouteille d'eau", category="Boisson", price=1.5, stock=50),
-    Product(name="Chocolat", category="Snacks", price=2.0, stock=100),
-    Product(name="Pomme", category="Fruit", price=0.8, stock=70)
-]
-
-# Ajoute les produits si la table est vide
-if session.query(Product).count() == 0:
-    session.add_all(products)
+# Ajoute 2 magasins si la table est vide
+if session.query(Store).count() == 0:
+    magasin1 = Store(name="Magasin A")
+    magasin2 = Store(name="Magasin B")
+    session.add_all([magasin1, magasin2])
     session.commit()
-    print("Produits ajoutés !")
+    print("Magasins créés.")
+
+# Ajoute des produits au magasin 1
+magasin1 = session.query(Store).filter_by(name="Magasin A").first()
+if magasin1 and session.query(Product).count() == 0:
+    produits = [
+        Product(name="Bouteille d'eau", category="Boisson", price=1.5, stock=50, store=magasin1),
+        Product(name="Chocolat", category="Snack", price=2.0, stock=30, store=magasin1),
+    ]
+    session.add_all(produits)
+    session.commit()
+    print("Produits ajoutés.")
 else:
-    print("Produits déjà présents.")
+    print("Magasins/Produits déjà présents.")
 
 session.close()

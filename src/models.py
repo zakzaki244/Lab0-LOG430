@@ -4,6 +4,13 @@ from sqlalchemy.orm import relationship
 from db import Base
 import datetime
 
+class Store(Base):
+    __tablename__ = "stores"
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False, unique=True)
+    products = relationship("Product", back_populates="store")
+
+
 class Product(Base):
     __tablename__ = "products"
     id       = Column(Integer, primary_key=True)
@@ -11,6 +18,8 @@ class Product(Base):
     category = Column(String, index=True)
     price    = Column(Float)
     stock    = Column(Integer, default=0)
+    store_id = Column(Integer, ForeignKey('stores.id'))   
+    store = relationship("Store", back_populates="products")
 
 class Sale(Base):
     __tablename__ = "sales"
