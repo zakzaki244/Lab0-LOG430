@@ -113,11 +113,11 @@ def refund():
         except Exception as e:
             message = str(e)
     return render_template("refund.html", message=message)
-    
+
 @app.route("/rapport")
 @login_required
 def rapport():
-    if session.get("role") != "Gestionnaire maison mère":
+    if session.get("role") != "gestionnaire":
         flash("Accès réservé aux gestionnaires de la maison mère.")
         return redirect(url_for("index"))
 

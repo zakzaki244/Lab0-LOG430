@@ -19,7 +19,7 @@
     <a href="{{ url_for('search') }}">Rechercher produit</a>
     <a href="{{ url_for('sale') }}">Nouvelle vente</a>
     <a href="{{ url_for('refund') }}">Annuler vente</a>
-    {% if session.role == "Gestionnaire maison mère" %}
+    {% if session.role == "gestionnaire" %}
         <a href="{{ url_for('rapport') }}">Rapport consolidé</a>
     {% endif %}
     <a href="{{ url_for('login') }}">Se connecter</a>
