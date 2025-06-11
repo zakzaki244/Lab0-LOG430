@@ -14,13 +14,16 @@
 </head>
 <body>
     <div class="nav">
-        <a href="{{ url_for('index') }}">Accueil</a>
-        <a href="{{ url_for('magasins') }}">Magasins</a>
-        <a href="{{ url_for('search') }}">Rechercher produit</a>
-        <a href="{{ url_for('sale') }}">Nouvelle vente</a>
-        <a href="{{ url_for('refund') }}">Annuler vente</a>
-        <a href="{{ url_for('login') }}">Se connecter</a>
-    </div>
+    <a href="{{ url_for('index') }}">Accueil</a>
+    <a href="{{ url_for('magasins') }}">Magasins</a>
+    <a href="{{ url_for('search') }}">Rechercher produit</a>
+    <a href="{{ url_for('sale') }}">Nouvelle vente</a>
+    <a href="{{ url_for('refund') }}">Annuler vente</a>
+    {% if session.role == "Gestionnaire maison mère" %}
+        <a href="{{ url_for('rapport') }}">Rapport consolidé</a>
+    {% endif %}
+    <a href="{{ url_for('login') }}">Se connecter</a>
+</div>
     <div class="session">
         {% if session.username %}
           Connecté en tant que <b>{{ session.username }}</b> ({{ session.role }}) — <a href="{{ url_for('logout') }}">Déconnexion</a>

@@ -113,6 +113,54 @@ def refund():
         except Exception as e:
             message = str(e)
     return render_template("refund.html", message=message)
+    
+@app.route("/rapport")
+@login_required
+def rapport():
+    if session.get("role") != "Gestionnaire maison mère":
+        flash("Accès réservé aux gestionnaires de la maison mère.")
+        return redirect(url_for("index"))
+
+    from db import SessionLocal
+    from models import Store, Product, Sale, SaleItem
+    session_db = SessionLocal()
+    
+    # Ventes par magasin
+    magasins = session_db.query(Store).all()
+    ventes_par_magasin = {}
+    produits_vendus = {}
+
+    for magasin in magasins:
+        ventes = (
+            session_db.query(Sale)
+            .join(SaleItem)
+            .join(Product)
+            .filter(Product.store_id == magasin.id)
+            .all()
+        )
+        ventes_par_magasin[magasin.name] = len(ventes)
+        # Récupérer produits les plus vendus
+        items = (
+            session_db.query(Product.name, SaleItem.quantity)
+            .join(SaleItem, Product.id == SaleItem.product_id)
+            .filter(Product.store_id == magasin.id)
+            .all()
+        )
+        produits_vendus[magasin.name] = items
+
+    # Stock restant par magasin
+    stocks = {}
+    for magasin in magasins:
+        produits = session_db.query(Product).filter_by(store_id=magasin.id).all()
+        stocks[magasin.name] = [(p.name, p.stock) for p in produits]
+
+    session_db.close()
+    return render_template(
+        "rapport.html",
+        ventes_par_magasin=ventes_par_magasin,
+        produits_vendus=produits_vendus,
+        stocks=stocks,
+    )
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
