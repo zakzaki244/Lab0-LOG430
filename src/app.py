@@ -60,19 +60,16 @@ def search():
         results = svc.search(term)
     return render_template("search.html", results=results)
 
-@app.route("/stock")
-def stock():
+@app.route("/store/<int:store_id>/stock")
+def store_stock(store_id):
     from db import SessionLocal
-    from models import Product
-    store_id = request.args.get("store_id")
+    from models import Store, Product
     session = SessionLocal()
-    if store_id:
-        produits = session.query(Product).filter_by(store_id=store_id).all()
-    else:
-        produits = session.query(Product).all()
+    store = session.query(Store).get(store_id)
+    produits = session.query(Product).filter_by(store_id=store_id).all()
     session.close()
-    return render_template("stock.html", produits=produits)
-    
+    return render_template("stock.html", store=store, produits=produits)
+
 
 @app.route("/sale", methods=["GET", "POST"])
 @login_required

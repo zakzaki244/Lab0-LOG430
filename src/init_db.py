@@ -26,4 +26,17 @@ if magasin1 and session.query(Product).count() == 0:
 else:
     print("Magasins/Produits déjà présents.")
 
+# Ajoute des produits au magasin 2
+magasin2 = session.query(Store).filter_by(name="Magasin B").first()
+if magasin2 and session.query(Product).count() == 0:
+    produits = [
+        Product(name="Coca Cola", category="Boisson", price=1.5, stock=150, store=magasin2),
+        Product(name="Sandwich", category="Snack", price=2.0, stock=400, store=magasin2),
+    ]
+    session.add_all(produits)
+    session.commit()
+    print("Produits ajoutés.")
+else:
+    print("Magasins/Produits déjà présents.")
+
 session.close()
