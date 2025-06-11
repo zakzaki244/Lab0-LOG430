@@ -3,11 +3,10 @@
 {% block content %}
 <h2>Liste des magasins</h2>
 <ul>
-    {% for magasin in magasins %}
-        <li>
-            {{ magasin.name }} (ID: {{ magasin.id }})<br>
-            <a href="/stock?store_id={{ magasin.id }}">Voir le stock</a>
-        </li>
-    {% endfor %}
+   {% for store in magasins %}
+    <li>{{ store.name }} (ID: {{ store.id }})
+        <a href="{{ url_for('store_stock', store_id=store.id) }}">Voir le stock</a>
+    </li>
+{% endfor %}
 </ul>
 {% endblock %}
