@@ -33,15 +33,16 @@ def login():
     session_db = SessionLocal()
     magasins = session_db.query(Store).all()
     session_db.close()
+
     message = ""
     if request.method == "POST":
         username = request.form.get("username", "")
         role = request.form.get("role", "")
-        store_id = request.form.get("store_id")
-        if username and role:
+        store_id = request.form.get("store_id", "")
+        if username and role and (role != "employe" or store_id):
             session["username"] = username
             session["role"] = role
-            if role in ("employe", "responsable"):
+            if role == "employe":
                 session["store_id"] = int(store_id)
             flash(f"Connecté en tant que {role} ({username})")
             return redirect(url_for("index"))

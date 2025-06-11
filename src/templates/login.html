@@ -1,37 +1,30 @@
-{% extends "base.html" %}
-{% block content %}
-<h2>Connexion</h2>
 <form method="post">
   <label>Nom d’utilisateur :</label>
   <input name="username" required>
   <br>
   <label>Rôle :</label>
-  <select name="role" id="role-select" required onchange="toggleMagasin()">
-    <option value="">Choisir...</option>
+  <select name="role" id="role" onchange="toggleStoreSelect()">
     <option value="employe">Employé</option>
     <option value="responsable">Responsable</option>
     <option value="gestionnaire">Gestionnaire maison mère</option>
     <option value="logistique">Responsable logistique</option>
   </select>
   <br>
-  <div id="magasin-select" style="display:none;">
-    <label>Magasin :</label>
+  <div id="store-select">
+    <label>Magasin assigné :</label>
     <select name="store_id">
       {% for store in magasins %}
         <option value="{{ store.id }}">{{ store.name }}</option>
       {% endfor %}
     </select>
-    <br>
   </div>
   <button type="submit">Se connecter</button>
 </form>
+
 <script>
-function toggleMagasin() {
-    var role = document.getElementById('role-select').value;
-    document.getElementById('magasin-select').style.display = (role === 'employe' || role === 'responsable') ? '' : 'none';
+function toggleStoreSelect() {
+  var role = document.getElementById('role').value;
+  document.getElementById('store-select').style.display = (role === "employe") ? "block" : "none";
 }
+toggleStoreSelect();
 </script>
-{% if message %}
-  <div class="error">{{ message }}</div>
-{% endif %}
-{% endblock %}
