@@ -344,6 +344,7 @@ def dashboard():
         # Tendances hebdo : ventes de la semaine (option simple)
     ventes_hebdo = (
     session_db.query(Sale)
+    .select_from(Sale)
     .join(SaleItem, Sale.id == SaleItem.sale_id)
     .join(Product, Product.id == SaleItem.product_id)
     .all()
