@@ -59,7 +59,7 @@ def login():
             return redirect(url_for("index"))
         else:
             message = "Veuillez remplir tous les champs"
-    return render_template("login.html", message=message, magasins=magasins,centre_id=get_centre_logistique_id() )
+    return render_template("login.html", message=message, magasins=magasins,centre_id=get_centre_logistique_id())
 
 
 @app.route("/logout")
@@ -84,7 +84,7 @@ def search():
     if request.method == "POST":
         term = request.form["term"]
         results = svc.search(term)
-    return render_template("search.html", results=results)
+    return render_template("search.html", results=results, centre_id=get_centre_logistique_id())
 
 @app.route("/store/<int:store_id>/stock")
 @login_required
@@ -145,7 +145,7 @@ def sale():
             if qte > 0:
                 if qte > produit.stock:
                     message = f"Stock insuffisant pour {produit.name}"
-                    return render_template("sale.html", produits=produits, message=message)
+                    return render_template("sale.html", produits=produits, message=message, centre_id=get_centre_logistique_id())
                 cart.append((produit.id, qte))
         if cart:
             try:
@@ -179,16 +179,13 @@ def rapport():
     if session.get("role") != "gestionnaire":
         flash("Accès réservé aux gestionnaires de la maison mère.")
         return redirect(url_for("index"))
-
     from db import SessionLocal
     from models import Store, Product, Sale, SaleItem
     session_db = SessionLocal()
-    
     # Ventes par magasin
     magasins = session_db.query(Store).all()
     ventes_par_magasin = {}
     produits_vendus = {}
-
     for magasin in magasins:
         ventes = (
             session_db.query(Sale)
@@ -206,7 +203,6 @@ def rapport():
             .all()
         )
         produits_vendus[magasin.name] = items
-
     # Stock restant par magasin
     stocks = {}
     for magasin in magasins:
@@ -218,7 +214,8 @@ def rapport():
         "rapport.html",
         ventes_par_magasin=ventes_par_magasin,
         produits_vendus=produits_vendus,
-        stocks=stocks,
+        stocks=stocks, 
+        centre_id=get_centre_logistique_id(),
     )
 
 
