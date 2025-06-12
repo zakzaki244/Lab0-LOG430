@@ -15,6 +15,9 @@
 <body>
     <div class="nav">
     <a href="{{ url_for('index') }}">Accueil</a>
+    {% if session.role == "logistique" %}
+    <a href="{{ url_for('demande_reappro') }}">Demandes de réappro</a>
+{% endif %}
     <a href="{{ url_for('magasins') }}">Magasins</a>
   <a href="{{ url_for('store_stock', store_id=centre_id) }}">Centre logistique</a>
     <a href="{{ url_for('search') }}">Rechercher produit</a>

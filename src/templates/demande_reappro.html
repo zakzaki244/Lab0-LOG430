@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Demandes de réapprovisionnement</h2>
+  <table>
+    <tr>
+      <th>Produit</th>
+      <th>Magasin</th>
+      <th>Quantité</th>
+      <th>Demandé par</th>
+      <th>Action</th>
+    </tr>
+    {% for demande in demandes %}
+    <tr>
+      <td>{{ demande.product.name }}</td>
+      <td>{{ demande.store.name }}</td>
+      <td>{{ demande.quantity }}</td>
+      <td>{{ demande.requested_by }}</td>
+      <td>
+        <form method="post" style="display:inline;">
+          <input type="hidden" name="request_id" value="{{ demande.id }}">
+          <button type="submit">Valider</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+      <tr><td colspan="5">Aucune demande</td></tr>
+    {% endfor %}
+  </table>
+{% endblock %}

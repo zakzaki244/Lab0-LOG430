@@ -73,6 +73,80 @@ def login():
             message = "Veuillez remplir tous les champs"
     return render_template("login.html", message=message, magasins=magasins,centre_id=get_centre_logistique_id())
 
+@app.route("/reapprovisionnement/<int:product_id>", methods=["POST"])
+@login_required
+def reapprovisionnement(product_id):
+    from db import SessionLocal
+    from models import Product, ReapproRequest, Store
+    session_db = SessionLocal()
+
+    store_id = session.get("store_id")
+    quantity = int(request.form.get("qte", 1))
+    requested_by = session.get("username")
+    # Enregistre la demande
+    demande = ReapproRequest(
+        store_id=store_id,
+        product_id=product_id,
+        quantity=quantity,
+        requested_by=requested_by,
+        status="en attente"
+    )
+    session_db.add(demande)
+    session_db.commit()
+    session_db.close()
+    flash("Demande de réapprovisionnement envoyée au responsable logistique.")
+    return redirect(url_for('stock'))
+
+@app.route("/demande_reappro", methods=["GET", "POST"])
+@login_required
+def demande_reappro():
+    if session.get("role") != "logistique":
+        flash("Accès réservé au responsable logistique.")
+        return redirect(url_for("index"))
+    from db import SessionLocal
+    from models import ReapproRequest, Product, Store
+    session_db = SessionLocal()
+
+    # Validation d’une demande
+    if request.method == "POST":
+        req_id = int(request.form["request_id"])
+        req = session_db.query(ReapproRequest).get(req_id)
+        if req and req.status == "en attente":
+            # Approvisionne le magasin (retire du centre logistique, ajoute au magasin)
+            centre = session_db.query(Store).filter_by(name="Centre Logistique").first()
+            prod_centre = session_db.query(Product).filter_by(store_id=centre.id, name=req.product.name).first()
+            prod_mag = session_db.query(Product).filter_by(store_id=req.store_id, name=req.product.name).first()
+
+            if prod_centre and prod_centre.stock >= req.quantity:
+                prod_centre.stock -= req.quantity
+                if prod_mag:
+                    prod_mag.stock += req.quantity
+                else:
+                    # Si le produit n'existe pas dans le magasin, crée-le
+                    prod_mag = Product(
+                        name=prod_centre.name,
+                        category=prod_centre.category,
+                        price=prod_centre.price,
+                        stock=req.quantity,
+                        store_id=req.store_id
+                    )
+                    session_db.add(prod_mag)
+                req.status = "validée"
+                session_db.commit()
+                flash("Réapprovisionnement validé !")
+            else:
+                flash("Stock insuffisant au centre logistique !")
+        session_db.close()
+        return redirect(url_for("demande_reappro"))
+
+    # Affichage des demandes en attente
+    demandes = (
+        session_db.query(ReapproRequest)
+        .filter_by(status="en attente")
+        .all()
+    )
+    session_db.close()
+    return render_template("demande_reappro.html", demandes=demandes)
 
 @app.route("/logout")
 def logout():
