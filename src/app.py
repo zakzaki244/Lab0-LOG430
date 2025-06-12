@@ -329,7 +329,7 @@ def dashboard():
     for magasin in magasins:
         total = (
             session_db.query(func.sum(SaleItem.quantity * Product.price))
-            .select_from(Sale)
+            .select_from(Sale, Product, SaleItem)
             .join(SaleItem, SaleItem.product_id == Product.id)
             .filter(Product.store_id == magasin.id)
             .scalar()
@@ -344,7 +344,7 @@ def dashboard():
 
      # Tendances hebdo : ventes de la semaine (option simple)
     ventes_hebdo = (
-    session_db.query(Sale)
+    session_db.query(Sale, SaleItem, Product)
     .select_from(Sale)
     .join(SaleItem, Sale.id == SaleItem.sale_id)
     .join(Product, Product.id == SaleItem.product_id)
