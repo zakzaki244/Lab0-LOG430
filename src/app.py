@@ -24,7 +24,16 @@ def index():
     session_db = SessionLocal()
     magasins = session_db.query(Store).all()
     session_db.close()
-    return render_template("index.html", magasins=magasins)
+    return render_template("index.html", magasins=magasins, centre_id=get_centre_logistique_id())
+
+def get_centre_logistique_id():
+    from db import SessionLocal
+    from models import Store
+    session = SessionLocal()
+    centre = session.query(Store).filter_by(name="Centre Logistique").first()
+    centre_id = centre.id if centre else None
+    session.close()
+    return centre_id
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -66,7 +75,7 @@ def magasins():
     session = SessionLocal()
     magasins = session.query(Store).all()
     session.close()
-    return render_template("magasins.html", magasins=magasins)
+    return render_template("magasins.html", magasins=magasins, centre_id=get_centre_logistique_id())
 
 @app.route("/search", methods=["GET", "POST"])
 @login_required
@@ -86,7 +95,7 @@ def store_stock(store_id):
     store = session_db.query(Store).get(store_id)
     produits = session_db.query(Product).filter_by(store_id=store_id).all()
     session_db.close()
-    return render_template("stock.html", store=store, produits=produits)
+    return render_template("stock.html", store=store, produits=produits, centre_id=get_centre_logistique_id())
 
 
 @app.route("/stock")
@@ -106,7 +115,7 @@ def stock():
         # Si pas de magasin (gestionnaire), montrer tous les produits
         produits = session_db.query(Product).all()
     session_db.close()
-    return render_template("stock.html", produits=produits, store=store)
+    return render_template("stock.html", produits=produits, store=store, centre_id=get_centre_logistique_id())
 
 
 @app.route("/sale", methods=["GET", "POST"])
@@ -147,7 +156,7 @@ def sale():
                 message = str(e)
         else:
             message = "Aucun article sélectionné."
-    return render_template("sale.html", produits=produits, message=message)
+    return render_template("sale.html", produits=produits, message=message, centre_id=get_centre_logistique_id())
 
 
 @app.route("/refund", methods=["GET", "POST"])
@@ -162,7 +171,7 @@ def refund():
             return redirect(url_for("refund"))
         except Exception as e:
             message = str(e)
-    return render_template("refund.html", message=message)
+    return render_template("refund.html", message=message, centre_id=get_centre_logistique_id())
 
 @app.route("/rapport")
 @login_required
