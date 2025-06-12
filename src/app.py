@@ -75,7 +75,7 @@ def login():
 
 @app.route("/reapprovisionnement/<int:product_id>", methods=["POST"])
 @login_required
-def reapprovisionnement(product_id):
+def reapprovisionnement_magasin(product_id):
     from db import SessionLocal
     from models import Product, ReapproRequest, Store
     session_db = SessionLocal()
