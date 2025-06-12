@@ -146,7 +146,7 @@ def demande_reappro():
         .all()
     )
     session_db.close()
-    return render_template("demande_reappro.html", demandes=demandes)
+    return render_template("demande_reappro.html", demandes=demandes, centre_id=get_centre_logistique_id())
 
 @app.route("/logout")
 def logout():
