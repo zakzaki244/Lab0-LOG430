@@ -17,9 +17,11 @@
     <a href="{{ url_for('index') }}">Accueil</a>
     {% if session.role == "logistique" %}
     <a href="{{ url_for('demande_reappro') }}">Demandes de réappro</a>
-{% endif %}
+    {% endif %}
     <a href="{{ url_for('magasins') }}">Magasins</a>
-  <a href="{{ url_for('store_stock', store_id=centre_id) }}">Centre logistique</a>
+    {% if centre_id %}
+    <a href="{{ url_for('store_stock', store_id=centre_id) }}">Centre logistique</a>
+    {% endif %}
     <a href="{{ url_for('search') }}">Rechercher produit</a>
     {% if session.role == "employe" %}
         <a href="{{ url_for('stock') }}">Voir le stock</a>
