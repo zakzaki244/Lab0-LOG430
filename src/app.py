@@ -342,22 +342,33 @@ def dashboard():
     # Produits en surstock (> 200)
     surstock = session_db.query(Product).filter(Product.stock > 200).all()
 
-     # Tendances hebdo : ventes de la semaine (option simple)
+    # Tendances hebdo : ventes de la semaine 
     ventes_hebdo = (
-    session_db.query(Sale, SaleItem, Product)
-    .select_from(Sale)
-    .join(SaleItem, Sale.id == SaleItem.sale_id)
-    .join(Product, Product.id == SaleItem.product_id)
-    .all()
-)
+        session_db.query(Sale, SaleItem, Product, Store)
+        .select_from(Sale)
+        .join(SaleItem, Sale.id == SaleItem.sale_id)
+        .join(Product, Product.id == SaleItem.product_id)
+        .join(Store, Product.store_id == Store.id)
+        .all()
+    )
+    ventes_hebdo_data = []
+    for sale, saleitem, product, store in ventes_hebdo:
+        ventes_hebdo_data.append({
+            "product_name": product.name,
+            "store_name": store.name,
+            "quantity": saleitem.quantity,
+            "stock": product.stock, 
+        })
+
     session_db.close()
     return render_template(
         "dashboard.html",
         ca_par_magasin=ca_par_magasin,
         alertes_rupture=alertes_rupture,
         surstock=surstock,
-        ventes_hebdo=ventes_hebdo
+        ventes_hebdo=ventes_hebdo_data  
     )
+
 
 @app.route("/rapport")
 @login_required

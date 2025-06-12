@@ -31,5 +31,15 @@
 {% else %}<em>Pas de surstock</em>{% endif %}
 
 <h3>Tendances hebdomadaires</h3>
-Nombre de ventes la semaine : <b>{{ ventes_hebdo|length }}</b>
+Nombre de ventes la semaine : 
+<b>{% for v in ventes_hebdo %}
+  <tr>
+    <td>{{ v.product_name }}</td>
+    <td>{{ v.store_name }}</td>
+    <td>{{ v.quantity }}</td>
+    <td>{{ v.stock }}</td>
+    <td>{{ v.sale_date }}</td>
+  </tr>
+{% endfor %}
+</b>
 {% endblock %}
