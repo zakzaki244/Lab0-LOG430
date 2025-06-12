@@ -341,6 +341,14 @@ def dashboard():
     # Produits en surstock (> 200)
     surstock = session_db.query(Product).filter(Product.stock > 200).all()
 
+        # Tendances hebdo : ventes de la semaine (option simple)
+    ventes_hebdo = (
+    session_db.query(Sale)
+    .join(SaleItem, Sale.id == SaleItem.sale_id)
+    .join(Product, Product.id == SaleItem.product_id)
+    .all()
+)
+
     session_db.close()
     return render_template(
         "dashboard.html",

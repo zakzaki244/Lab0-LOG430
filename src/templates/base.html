@@ -98,7 +98,6 @@ form {
 <body>
     <div class="nav">
     <a href="{{ url_for('index') }}">Accueil</a>
-    
     {% if session.role == "gestionnaire" %}
     <a href="{{ url_for('dashboard') }}">Tableau de bord</a>
     {% endif %}
