@@ -310,7 +310,55 @@ def manage_products():
     magasins = session_db.query(Store).all()
     session_db.close()
     return render_template("products.html", produits=produits, magasins=magasins)
-    
+
+@app.route("/dashboard")
+@login_required
+def dashboard():
+    if session.get("role") != "gestionnaire":
+        flash("Accès réservé au gestionnaire maison mère.")
+        return redirect(url_for("index"))
+
+    from db import SessionLocal
+    from models import Store, Product, Sale, SaleItem
+    from sqlalchemy import func
+    session_db = SessionLocal()
+
+    # CA par magasin
+    magasins = session_db.query(Store).all()
+    ca_par_magasin = {}
+    for magasin in magasins:
+        total = (
+            session_db.query(func.sum(SaleItem.quantity * Product.price))
+            .join(SaleItem, SaleItem.product_id == Product.id)
+            .filter(Product.store_id == magasin.id)
+            .scalar()
+        )
+        ca_par_magasin[magasin.name] = total or 0
+
+    # Alertes de rupture de stock (< 10)
+    alertes_rupture = session_db.query(Product).filter(Product.stock < 10).all()
+
+    # Produits en surstock (> 200)
+    surstock = session_db.query(Product).filter(Product.stock > 200).all()
+
+    # Tendances hebdo : ventes de la semaine (option simple)
+    from datetime import datetime, timedelta
+    date_limite = datetime.now() - timedelta(days=7)
+    ventes_hebdo = (
+        session_db.query(Sale)
+        .filter(Sale.date >= date_limite)
+        .all()
+    )
+
+    session_db.close()
+    return render_template(
+        "dashboard.html",
+        ca_par_magasin=ca_par_magasin,
+        alertes_rupture=alertes_rupture,
+        surstock=surstock,
+        ventes_hebdo=ventes_hebdo
+    )
+
 @app.route("/rapport")
 @login_required
 def rapport():
