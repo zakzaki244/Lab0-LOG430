@@ -321,6 +321,7 @@ def dashboard():
     from db import SessionLocal
     from models import Store, Product, Sale, SaleItem
     from sqlalchemy import func
+    from sqlalchemy.orm import joinedload
     session_db = SessionLocal()
 
     # CA par magasin
@@ -329,7 +330,6 @@ def dashboard():
     for magasin in magasins:
         total = (
             session_db.query(func.sum(SaleItem.quantity * Product.price))
-            .select_from(Sale, Product, SaleItem)
             .join(SaleItem, SaleItem.product_id == Product.id)
             .filter(Product.store_id == magasin.id)
             .scalar()
@@ -337,15 +337,32 @@ def dashboard():
         ca_par_magasin[magasin.name] = total or 0
 
     # Alertes de rupture de stock (< 10)
-    alertes_rupture = session_db.query(Product).filter(Product.stock < 10).all()
+    alertes_rupture = (
+        session_db.query(Product)
+        .options(joinedload(Product.store))
+        .filter(Product.stock < 10)
+        .all()
+    )
+    alertes_rupture_data = [
+        {"name": p.name, "store_name": p.store.name, "stock": p.stock}
+        for p in alertes_rupture
+    ]
 
     # Produits en surstock (> 200)
-    surstock = session_db.query(Product).filter(Product.stock > 200).all()
+    surstock = (
+        session_db.query(Product)
+        .options(joinedload(Product.store))
+        .filter(Product.stock > 200)
+        .all()
+    )
+    surstock_data = [
+        {"name": p.name, "store_name": p.store.name, "stock": p.stock}
+        for p in surstock
+    ]
 
-    # Tendances hebdo : ventes de la semaine 
+    # Tendances hebdo : ventes de la semaine (option simple)
     ventes_hebdo = (
         session_db.query(Sale, SaleItem, Product, Store)
-        .select_from(Sale)
         .join(SaleItem, Sale.id == SaleItem.sale_id)
         .join(Product, Product.id == SaleItem.product_id)
         .join(Store, Product.store_id == Store.id)
@@ -357,17 +374,18 @@ def dashboard():
             "product_name": product.name,
             "store_name": store.name,
             "quantity": saleitem.quantity,
-            "stock": product.stock, 
+            "stock": product.stock,
         })
 
     session_db.close()
     return render_template(
         "dashboard.html",
         ca_par_magasin=ca_par_magasin,
-        alertes_rupture=alertes_rupture,
-        surstock=surstock,
-        ventes_hebdo=ventes_hebdo_data  
+        alertes_rupture=alertes_rupture_data,
+        surstock=surstock_data,
+        ventes_hebdo=ventes_hebdo_data
     )
+
 
 
 @app.route("/rapport")

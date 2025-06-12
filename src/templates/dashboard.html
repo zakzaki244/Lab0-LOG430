@@ -15,7 +15,11 @@
 <table>
     <tr><th>Produit</th><th>Magasin</th><th>Stock</th></tr>
     {% for p in alertes_rupture %}
-        <tr><td>{{ p.name }}</td><td>{{ p.store.name }}</td><td>{{ p.stock }}</td></tr>
+        <tr>
+            <td>{{ p.name }}</td>
+            <td>{{ p.store_name }}</td>
+            <td>{{ p.stock }}</td>
+        </tr>
     {% endfor %}
 </table>
 {% else %}<em>Aucune alerte</em>{% endif %}
@@ -25,21 +29,34 @@
 <table>
     <tr><th>Produit</th><th>Magasin</th><th>Stock</th></tr>
     {% for p in surstock %}
-        <tr><td>{{ p.name }}</td><td>{{ p.store.name }}</td><td>{{ p.stock }}</td></tr>
+        <tr>
+            <td>{{ p.name }}</td>
+            <td>{{ p.store_name }}</td>
+            <td>{{ p.stock }}</td>
+        </tr>
     {% endfor %}
 </table>
 {% else %}<em>Pas de surstock</em>{% endif %}
 
 <h3>Tendances hebdomadaires</h3>
-Nombre de ventes la semaine : 
-<b>{% for v in ventes_hebdo %}
-  <tr>
-    <td>{{ v.product_name }}</td>
-    <td>{{ v.store_name }}</td>
-    <td>{{ v.quantity }}</td>
-    <td>{{ v.stock }}</td>
-    <td>{{ v.sale_date }}</td>
-  </tr>
-{% endfor %}
-</b>
+<table>
+    <tr>
+        <th>Produit</th>
+        <th>Magasin</th>
+        <th>Quantité vendue</th>
+        <th>Stock restant</th>
+        <th>Date de vente</th>
+    </tr>
+    {% for v in ventes_hebdo %}
+    <tr>
+        <td>{{ v.product_name }}</td>
+        <td>{{ v.store_name }}</td>
+        <td>{{ v.quantity }}</td>
+        <td>{{ v.stock }}</td>
+        <td>
+            {%- if v.sale_date %}{{ v.sale_date }}{%- else -%}N/A{%- endif -%}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
 {% endblock %}
