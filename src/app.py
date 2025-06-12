@@ -344,11 +344,13 @@ def dashboard():
     # Tendances hebdo : ventes de la semaine (option simple)
     from datetime import datetime, timedelta
     date_limite = datetime.now() - timedelta(days=7)
-    ventes_hebdo = (
-        session_db.query(Sale)
-        .filter(Sale.date >= date_limite)
-        .all()
-    )
+    ventes_hebdo = (session_db.query(Sale)
+    .select_from(Sale)
+    .join(SaleItem, Sale.id == SaleItem.sale_id)
+    .join(Product, Product.id == SaleItem.product_id)
+    .filter(Product.store_id == magasin.id)
+    .all()
+)
 
     session_db.close()
     return render_template(
