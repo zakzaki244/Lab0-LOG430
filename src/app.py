@@ -4,6 +4,9 @@ from service import Service
 
 app = Flask(__name__)
 app.secret_key = "secret"
+@app.context_processor
+def inject_centre_id():
+    return dict(centre_id=get_centre_logistique_id())
 
 svc = Service()
 
