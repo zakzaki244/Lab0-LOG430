@@ -59,7 +59,7 @@ def login():
             return redirect(url_for("index"))
         else:
             message = "Veuillez remplir tous les champs"
-    return render_template("login.html", message=message, magasins=magasins)
+    return render_template("login.html", message=message, magasins=magasins,centre_id=get_centre_logistique_id() )
 
 
 @app.route("/logout")
