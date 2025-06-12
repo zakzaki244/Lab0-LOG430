@@ -98,6 +98,10 @@ form {
 <body>
     <div class="nav">
     <a href="{{ url_for('index') }}">Accueil</a>
+    
+    {% if session.role == "gestionnaire" %}
+    <a href="{{ url_for('dashboard') }}">Tableau de bord</a>
+    {% endif %}
     {% if session.role == "logistique" %}
     <a href="{{ url_for('demande_reappro') }}">Demandes de réappro</a>
     {% endif %}
