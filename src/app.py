@@ -4,6 +4,7 @@ from service import Service
 
 app = Flask(__name__)
 app.secret_key = "secret"
+
 @app.context_processor
 def inject_centre_id():
     return dict(centre_id=get_centre_logistique_id())
@@ -262,6 +263,54 @@ def refund():
             message = str(e)
     return render_template("refund.html", message=message, centre_id=get_centre_logistique_id())
 
+@app.route("/products", methods=["GET", "POST"])
+@login_required
+def manage_products():
+    if session.get("role") == "employe":
+        flash("Accès refusé.")
+        return redirect(url_for("index"))
+    from db import SessionLocal
+    from models import Product, Store
+    session_db = SessionLocal()
+
+    # Création d'un nouveau produit
+    if request.method == "POST" and "create" in request.form:
+        name = request.form["name"]
+        category = request.form["category"]
+        price = float(request.form["price"])
+        stock = int(request.form["stock"])
+        store_id = int(request.form["store_id"])
+        nouveau = Product(name=name, category=category, price=price, stock=stock, store_id=store_id)
+        session_db.add(nouveau)
+        session_db.commit()
+        flash("Produit créé avec succès.")
+
+    # Modification d'un produit (inline)
+    if request.method == "POST" and "edit" in request.form:
+        prod_id = int(request.form["prod_id"])
+        produit = session_db.query(Product).get(prod_id)
+        produit.name = request.form["name"]
+        produit.category = request.form["category"]
+        produit.price = float(request.form["price"])
+        produit.stock = int(request.form["stock"])
+        produit.store_id = int(request.form["store_id"])
+        session_db.commit()
+        flash("Produit mis à jour.")
+
+    # Suppression
+    if request.method == "POST" and "delete" in request.form:
+        prod_id = int(request.form["prod_id"])
+        produit = session_db.query(Product).get(prod_id)
+        session_db.delete(produit)
+        session_db.commit()
+        flash("Produit supprimé.")
+
+    # Affichage produits et magasins
+    produits = session_db.query(Product).all()
+    magasins = session_db.query(Store).all()
+    session_db.close()
+    return render_template("products.html", produits=produits, magasins=magasins)
+    
 @app.route("/rapport")
 @login_required
 def rapport():
