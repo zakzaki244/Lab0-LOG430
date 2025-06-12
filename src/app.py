@@ -35,6 +35,18 @@ def get_centre_logistique_id():
     session.close()
     return centre_id
 
+@app.route("/reapprovisionnement/<int:product_id>", methods=["POST"])
+@login_required
+def reapprovisionnement(product_id):
+    from db import SessionLocal
+    from models import Product
+    qte = int(request.form["qte"])
+    session_db = SessionLocal()
+    produit = session_db.query(Product).get(product_id)
+    session_db.close()
+    flash(f"Demande de réapprovisionnement de {qte}x {produit.name} envoyée à la logistique.")
+    return redirect(url_for('stock'))
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     from db import SessionLocal
