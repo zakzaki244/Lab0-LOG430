@@ -2,6 +2,40 @@
 
 [![CI](https://github.com/zakzaki244/Lab0-LOG430/actions/workflows/ci.yml/badge.svg)](https://github.com/zakzaki244/Lab0-LOG430/actions)
 
+
+## 1. Architecture du projet
+
+Le projet suit le principe MVC/hexagonal :
+- `models.py` : Définition des modèles ORM SQLAlchemy (Store, Product, Sale…)
+- `dao.py` : Accès bas niveau à la base de données (CRUD)
+- `service.py` : Logique métier indépendante des routes (gestion ventes, stock…)
+- `app.py` / `routes.py` : Contrôleurs, définition des routes Flask (Web et API REST)
+- `db.py` : Configuration SQLAlchemy et connexion base
+- `init_db.py` : Script d’initialisation/démo de la BDD
+
+## 2. API REST
+
+Une couche d’API REST a été ajoutée :  
+Toutes les routes REST sont sous le préfixe `/api/` (voir `routes.py`).  
+Exemples :
+- `GET /api/products` : Retourne la liste de tous les produits au format JSON
+- `GET /api/products/<id>` : Retourne un produit précis
+- `POST /api/products` : Crée un produit (reçoit un JSON)
+
+
+## 3. Structure claire des routes REST
+
+- Toutes les routes REST sont clairement organisées sous `/api/` selon les entités (produit, magasin, vente).
+- Exemples de routes :
+    - `/api/products`
+    - `/api/magasins`
+    - `/api/ventes`
+- Les méthodes HTTP utilisées sont conformes aux standards REST : `GET`, `POST`, `PUT`, `DELETE`.
+
+
+
+
+
 ## Description 
 Ce dépôt contient la nouvelle version de l’application POS (Point Of Sale), évoluant d’une architecture 2-tiers vers **une architecture 3-tiers** réalisée en Python et conteneurisée avec Docker :
 

@@ -5,6 +5,9 @@ from service import Service
 app = Flask(__name__)
 app.secret_key = "secret"
 
+from routes import api
+app.register_blueprint(api)
+
 @app.context_processor
 def inject_centre_id():
     return dict(centre_id=get_centre_logistique_id())
